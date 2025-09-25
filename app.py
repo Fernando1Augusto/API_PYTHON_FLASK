@@ -1,12 +1,6 @@
 from flask import Flask, request, jsonify, abort
 from flask_cors import CORS
-import requests
-import uuid
-from validate_docbr import CPF, CNPJ
-import re
-from flask import Response
-import json
-import logging
+
 
 app = Flask(__name__)
 
