@@ -7,6 +7,8 @@ import re
 from flask import Response
 import json
 import logging
+import os
+
 
 app = Flask(__name__)
 
@@ -21,9 +23,12 @@ def health():
 # ===============================
 # 🔑 Certificado único (global)
 # ===============================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 CERT = (
-    "./certs/hom_cert_ciamara.crt",
-    "./certs/hom_key_ciamara.key"
+    os.path.join(BASE_DIR, "certs", "hom_cert_ciamara.crt"),
+    os.path.join(BASE_DIR, "certs", "hom_key_ciamara.key")
 )
 
 #===============================
