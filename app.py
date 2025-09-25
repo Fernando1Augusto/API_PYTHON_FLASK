@@ -31,6 +31,16 @@ CERT = (
     os.path.join(BASE_DIR, "certs", "hom_key_ciamara.key")
 )
 
+@app.route('/test-cert')
+def test_cert():
+    try:
+        with open(CERT[0], 'r') as f:
+            cert_content = f.read(100)  # lê os primeiros 100 caracteres
+        return jsonify({"message": "Certificado lido com sucesso", "preview": cert_content})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 #===============================
 # 1️⃣ Gerar Token de Acesso
 # ===============================
