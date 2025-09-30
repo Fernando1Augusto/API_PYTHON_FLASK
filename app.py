@@ -14,7 +14,7 @@ from datetime import datetime
 app = Flask(__name__)
 
 # 🔧 habilita CORS para todas as rotas e origens
-CORS(app, resources={r"/*": {"origins": ["https://home-bank-ciarama-appweb.s6z3g7.easypanel.host", "http://161.97.86.74:5000" ] }})
+CORS(app, resources={r"/*": {"origins": ["https://home-bank-ciarama-appweb.s6z3g7.easypanel.host/credito", "http://161.97.86.74:5000" ] }})
 
 
 @app.route('/')
