@@ -12,6 +12,7 @@ import os
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def home():
     return jsonify({"message": "API rodando com Flask no Docker!"})
@@ -27,8 +28,8 @@ def health():
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 CERT = (
-    os.path.join(BASE_DIR, "certs", "hom_cert_ciarama.crt"),
-    os.path.join(BASE_DIR, "certs", "hom_key_ciarama.key")
+    os.path.join(BASE_DIR, "certs", "prod_cert_ciarama.crt"),
+    os.path.join(BASE_DIR, "certs", "prod_ciarama.key")
 )
 
 @app.route('/test-cert')
@@ -57,11 +58,11 @@ REASONS_SCORE_PJ = {
 # 1️⃣ Gerar Token de Acesso
 # ===============================
 def gerar_token():
-    url_token = "https://sts.rdhi.com.br/api/oauth/token"
+    url_token = "https://sts.itau.com.br/api/oauth/token"
     payload = {
         "grant_type": "client_credentials",
-        "client_id": "89b42b5c-be89-402a-8b8f-479004e61f77",
-        "client_secret": "1c4911fa-042f-44a1-9d52-144d6ebb7c38",
+        "client_id": "4690c3aa-1a0e-4962-87a8-c4d0e17edc26",
+        "client_secret": "ad73706e-ae26-4265-9348-3c7222952189",
         "scope": "iaas-riskradar.read"
     }
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
@@ -86,7 +87,7 @@ def validar_documento(doc):
 # Função genérica de consulta
 # ===============================
 def consulta_api(token, endpoint, subject_document):
-    url = f"https://riskradar-iaas.api.hom.itau.com/risk-radar/v1/{endpoint}"
+    url = f"https://riskradar-iaas.api.itau.com/risk-radar/v1/{endpoint}"
     correlation_id = str(uuid.uuid4())
     headers = {
         "Authorization": f"Bearer {token}",
