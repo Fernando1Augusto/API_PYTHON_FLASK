@@ -8,12 +8,13 @@ from flask import Response
 import json
 import logging
 import os
+from datetime import datetime
 
 
 app = Flask(__name__)
 
 # 🔧 habilita CORS para todas as rotas e origens
-CORS(app, resources={r"/*": {"origins": "https://home-bank-ciarama-appweb.s6z3g7.easypanel.host"}})
+CORS(app, resources={r"/*": {"origins": ["https://home-bank-ciarama-appweb.s6z3g7.easypanel.host", "http://161.97.86.74:5000" ] }})
 
 
 @app.route('/')
@@ -326,6 +327,17 @@ def traduzir_nivel_risco(valor):
     return mapa.get(valor.upper(), valor)
 
 
+
+def formatar_data(data: str) -> str:
+    if not data:
+        return data
+    try:
+        return datetime.strptime(data, "%Y-%m-%d").strftime("%d-%m-%Y")
+    except ValueError:
+        return data
+
+
+
 # ========================fim traduções ========================
 
 def filtrar_e_renomear_json(data):
@@ -343,7 +355,8 @@ def filtrar_e_renomear_json(data):
     resultado["telefone"] = person.get("currentPhoneNumber")
     resultado["genero"] = traduzir_genero(person.get("gender"))     # PF
     resultado["situacao_governo"] = traduzir_situacao_governo(person.get("governmentStatus"))
-    resultado["data_nascimento"] = person.get("foundationBirthDate")  # nascimento PF, fundação PJ
+    resultado["data_nascimento"] = formatar_data(person.get("foundationBirthDate"))
+  # nascimento PF, fundação PJ
 
     # Histórico de e-mails antigos (PF)
     email_history = person.get("emailHistory", [])
