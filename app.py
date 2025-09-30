@@ -12,6 +12,9 @@ import os
 
 app = Flask(__name__)
 
+# 🔧 habilita CORS para todas as rotas e origens
+CORS(app, resources={r"/*": {"origins": "https://home-bank-ciarama-appweb.s6z3g7.easypanel.host"}})
+
 
 @app.route('/')
 def home():
