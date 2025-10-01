@@ -50,12 +50,60 @@ def test_cert():
 # 📝 Mapeamento de códigos de score (resumido)
 # ===============================
 REASONS_SCORE_PF = {
-    "R01": "Apresenta atraso no pagamento",
-    "R29": "Pouco volume de pagamentos em dia"
+    "R01": "Apresenta atraso no pagamento de compromissos financeiros",
+    "R02": "Apresenta contratação recente de crédito rotativo",
+    "R03": "Apresenta histórico reduzido de contratação de produtos financeiros",
+    "R04": "Possui compromissos financeiros com diversas instituições",
+    "R05": "Apresentou atraso no pagamento de compromissos financeiros",
+    "R06": "Apresentou atrasos recentes no pagamento de compromissos financeiros",
+    "R07": "Apresenta atraso no pagamento dos compromissos financeiros devido a pagamentos parciais",
+    "R08": "Apresenta contrato de crédito rotativo",
+    "R09": "Apresentou atrasos recentes no pagamento de compromissos financeiros com diversas instituições",
+    "R10": "Apresenta pagamentos parciais dos compromissos financeiros",
+    "R11": "Opt-out: Apresenta atraso no pagamento de compromissos financeiros",
+    "R12": "Não opt-out: Apresenta atraso no pagamento de compromissos financeiros e não apresenta histórico de crédito no Cadastro Positivo",
+    "R13": "Apresenta contrato de crédito pessoal ativo",
+    "R14": "Apresenta contratação recente de produtos financeiros",
+    "R15": "Apresenta produtos financeiros com alto volume de parcelas",
+    "R16": "Apresentou atrasos no pagamento de compromissos financeiros com diversas instituições",
+    "R17": "Opt-out: Apresentou atraso no pagamento de compromissos financeiros",
+    "R18": "Não opt-out: Apresentou atraso no pagamento de compromissos financeiros e não apresenta histórico de crédito no Cadastro Positivo",
+    "R19": "Apresenta diversos compromissos financeiros ativos",
+    "R20": "Opt-out: Não possui abertura do Cadastro Positivo ou solicitou descadastramento da base de dados de histórico de crédito",
+    "R21": "Não opt-out: Não apresenta histórico de crédito no Cadastro Positivo"
 }
 REASONS_SCORE_PJ = {
-    "R00": "Empresa com Score baixo risco",
-    "R29": "Pouco volume de pagamentos em dia"
+    "R00": "Empresa apresenta Score de baixo risco de inadimplência",
+    "R01": "Possui poucas ou nenhuma informação no Cadastro Positivo",
+    "R02": "A empresa foi aberta recentemente",
+    "R03": "Possui quadro societário com baixo número de sócios ou acionistas",
+    "R04": "Possui atrasos e/ou pendências financeiras ativas",
+    "R05": "Possui atrasos de parcelas/faturas em contratos recentes",
+    "R06": "Possui histórico de atraso nos últimos 3 meses",
+    "R07": "Possui histórico de atraso nos últimos 6 meses",
+    "R08": "Possui atrasos e/ou pendências financeiras ativas",
+    "R09": "Possui atrasos e/ou pendências financeiras ativas",
+    "R10": "Possui alta quantidade de contratações realizadas nos últimos 12 meses",
+    "R11": "Possui uma média alta de dias em atraso nas parcelas/faturas dos últimos 6 meses",
+    "R12": "Possui utilização de crédito emergencial recentemente",
+    "R13": "Possui utilização de crédito emergencial recentemente",
+    "R14": "Possui contratação recente de produtos de crédito",
+    "R15": "Possui contratação recente de produtos de crédito",
+    "R16": "Possui contratos com grande quantidade de parcelas",
+    "R17": "Possui atrasos recentes",
+    "R18": "Possui parcelas/faturas em atraso nos últimos 12 meses",
+    "R19": "Possui contratos com alto valor para quitação",
+    "R20": "Não possui histórico de relacionamento com grandes instituições financeiras",
+    "R21": "Possui grande quantidade de credores e/ou contratos com dívidas em aberto",
+    "R22": "Possui atrasos vigentes",
+    "R23": "Possui menor tendência de recuperação de dívidas em atrasos",
+    "R24": "Possui grande quantidade de credores e/ou contratos com dívidas em aberto nos últimos 6 meses",
+    "R25": "Possui atrasos mais longos",
+    "R26": "Possui maior comprometimento da renda com parcelas em aberto",
+    "R27": "Possui baixa frequência de pagamentos realizados sem atraso",
+    "R28": "Possui baixa frequência de pagamentos realizados sem atraso",
+    "R29": "Possui pouco volume de pagamentos em dia"
+
 }
 
 # ===============================
@@ -167,18 +215,37 @@ def traduzir_probabilidade(valor):
         return f"Entre {inicio}% e {fim}%"
     return valor  # caso não bata o padrão
 
-def traduzir_faixa_credito(valor):
+import re
+
+def traduzir_faixa_credito(valor: str) -> str:
     if not valor:
         return ""
-    # Procura dois números na string
+
+    # Caso: FROM_X_TO_Y
     match = re.search(r'FROM_(\d+)_TO_(\d+)', valor)
     if match:
         inicio, fim = match.groups()
-        # Formata com R$ e separador de milhar
         inicio_fmt = f"R$ {int(inicio):,}".replace(",", ".")
         fim_fmt = f"R$ {int(fim):,}".replace(",", ".")
         return f"{inicio_fmt} até {fim_fmt}"
+
+    # Caso: UP_TO_Y
+    match = re.search(r'UP_TO_(\d+)', valor)
+    if match:
+        fim = match.group(1)
+        fim_fmt = f"R$ {int(fim):,}".replace(",", ".")
+        return f"Até {fim_fmt}"
+
+    # Caso: FROM_X (sem limite superior)
+    match = re.search(r'FROM_(\d+)', valor)
+    if match:
+        inicio = match.group(1)
+        inicio_fmt = f"R$ {int(inicio):,}".replace(",", ".")
+        return f"A partir de {inicio_fmt}"
+
+    # Retorno padrão se não bater nenhum regex
     return valor
+
 
 def traduzir_risco_credito(valor):
     mapa = {
