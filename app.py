@@ -535,7 +535,7 @@ def filtrar_e_renomear_json(data):
             "empresa_credora_nome": d.get("creditorCompanyName"),
             "localizacao": d.get("location"),
             "tipo_participante": d.get("participantType"),
-            "valor": formatar_moeda(d.get("value")),
+            "valor": d.get("value"),
         }
         for d in delinquencias
     ]
