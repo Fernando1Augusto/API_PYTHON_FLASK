@@ -499,6 +499,8 @@ def filtrar_e_renomear_json(data):
     resultado["faixa_limite_credito"] = traduzir_faixa_credito(credit.get("limitRange"))  # PF
     resultado["descricao_risco_credito"] = traduzir_risco_credito(credit.get("riskDescription"))  # PF
     resultado["classificacao_risco_credito"] = credit.get("riskRanking")  # PF
+    
+
 
     # =======================
     # PREVENÇÃO DE FRAUDES
@@ -533,7 +535,7 @@ def filtrar_e_renomear_json(data):
             "empresa_credora_nome": d.get("creditorCompanyName"),
             "localizacao": d.get("location"),
             "tipo_participante": d.get("participantType"),
-            "valor": d.get("value"),
+            "valor": formatar_moeda(d.get("value")),
         }
         for d in delinquencias
     ]
@@ -779,6 +781,10 @@ def consulta_completa():
 
     # Consulta API
     data = consulta_api(token, "credit-scores-reports", doc)
+
+    
+    # imprime já convertido em dicionário
+    print(data)
 
     # Escolhe a função certa
     if tipo == "PF":
